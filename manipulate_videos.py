@@ -1,6 +1,8 @@
 from glob import glob
 import os
 
+import cv2
+
 
 def make_dir_if_not_exist(dirpath):
     if not os.path.exists(dirpath):
@@ -47,22 +49,47 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
             )
             print(command)
             os.system(command)
-        
+
+
+def write_frames_to_dir(vid_file, dest_dir):
+    vid = cv2.VideoCapture(vid_file)
+    i = -1
+    while True:
+        read_success, frame = vid.read()
+        if read_success:
+            i += 1
+            dest_path = '{}/{}.jpg'.format(dest_dir, i)
+            cv2.imwrite(dest_path, frame)
+        else:
+            return
+
+
+def create_frames(video_src_dir, dest_frames_dir):
+    for f in glob(video_src_dir + '/*.mp4'):
+        ytid = os.path.splitext(os.path.basename(f))[0]
+        this_dest_dir = os.path.join(dest_frames_dir, ytid)
+        make_dir_if_not_exist(this_dest_dir)
+        write_frames_to_dir(vid_file=f, dest_dir=this_dest_dir)
+
 
 def main():
-    input_file = '/proj/balanced_train_segments.csv'
-    output_dir = '/proj/vids'
-    make_dir_if_not_exist(output_dir)
-    download_from_file(input_file, output_dir)
-
+    vid_segments_info_file = '/proj/balanced_train_segments.csv'
+    
     downloads_dir = '/exp/downloads'
     segments_dir = '/exp/segments'
     make_dir_if_not_exist(segments_dir)
     cut_videos(
-        vid_segments_file=input_file,
+        vid_segments_file=vid_segments_info_file,
         downloads_dir=downloads_dir,
         destination_dir=segments_dir    
     )
+
+    frames_dir = '/exp/frames'
+    create_frames(
+        video_src_dir=segments_dir,
+        dest_frames_dir=frames_dir
+    )
+
 
 if __name__ == '__main__':
     main()
