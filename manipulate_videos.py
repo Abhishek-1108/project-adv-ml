@@ -65,11 +65,17 @@ def write_frames_to_dir(vid_file, dest_dir):
 
 
 def create_frames(video_src_dir, dest_frames_dir):
+    i = 0
     for f in glob(video_src_dir + '/*.mp4'):
         ytid = os.path.splitext(os.path.basename(f))[0]
         this_dest_dir = os.path.join(dest_frames_dir, ytid)
         make_dir_if_not_exist(this_dest_dir)
         write_frames_to_dir(vid_file=f, dest_dir=this_dest_dir)
+        i += 1
+        if i % 10 == 0:
+            print('frames for {} files created'.format(i))
+
+    print('frames were created for a total of {} files'.format(i))
 
 
 def main():
