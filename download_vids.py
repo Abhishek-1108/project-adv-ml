@@ -25,6 +25,9 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
         lines = [l for l in infile]
 
     for line in lines:
+        if line.startswith('#'):
+            continue
+            
         split_line = line.split(',')
         ytid, start, end = split_line[0], split_line[1], split_line[2]
         segments[ytid] = (start, end)
@@ -46,5 +49,5 @@ if __name__ == '__main__':
     cut_videos(
         vid_segments_file=input_file,
         downloads_dir=downloads_dir,
-        segments_dir=segments_dir    
+        destination_dir=segments_dir    
     )
