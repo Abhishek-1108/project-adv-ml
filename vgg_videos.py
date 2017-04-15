@@ -1,6 +1,6 @@
 from glob import glob
 from keras import applications
-from scipy.misc import imread
+from scipy.misc import imread, imresize
 import numpy as np
 
 
@@ -23,10 +23,14 @@ def forward_prop_and_save(model, X, dest_path):
 
 def featurize_dir(source_dir):
     subdirs = [d for d in os.listdir(source_dir) if os.path.isdir(os.path.join(source_dir, d))]
+    target_size = (150, 150)
+    X = []
     for d in subdirs:
-        X = []
+        frameset = []
         for f in glob(d + '/*.jpg'):
             img = imread(f)
-            X.append(img)
+            img = imresize(img, target_size)
+            frameset.append(img)
 
         break
+        X.append(framset)
