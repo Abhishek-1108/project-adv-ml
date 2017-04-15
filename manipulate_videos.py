@@ -3,8 +3,8 @@ import os
 
 
 def make_dir_if_not_exist(dirpath):
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    if not os.path.exists(dirpath):
+        os.makedirs(dirpath)
 
 
 def download_from_file(filepath, output_dir, start=1, end=100):
