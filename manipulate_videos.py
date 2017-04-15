@@ -46,11 +46,10 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
                 output=dest_path
             )
             print(command)
-            # os.system(command)
+            os.system(command)
         
 
-
-if __name__ == '__main__':
+def main():
     input_file = '/proj/balanced_train_segments.csv'
     output_dir = '/proj/vids'
     make_dir_if_not_exist(output_dir)
@@ -64,3 +63,6 @@ if __name__ == '__main__':
         downloads_dir=downloads_dir,
         destination_dir=segments_dir    
     )
+
+if __name__ == '__main__':
+    main()
