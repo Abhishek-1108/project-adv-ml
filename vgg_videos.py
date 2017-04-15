@@ -32,5 +32,15 @@ def featurize_dir(source_dir):
             img = imresize(img, target_size)
             frameset.append(img)
 
-        break
         X.append(framset)
+    return X
+
+
+def main():
+    frames_dir = '/exp/frames'
+    X = featurize_dir(source_dir=frames_dir)
+    import ipdb; ipdb.set_trace()
+    
+
+if __name__ == '__main__':
+    main()
