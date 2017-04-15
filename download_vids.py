@@ -27,14 +27,27 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
     for line in lines:
         if line.startswith('#'):
             continue
-            
+
         split_line = line.split(',')
         ytid, start, end = split_line[0], split_line[1], split_line[2]
         segments[ytid] = (start, end)
 
     for f in glob(downloads_dir + '/*.mp4'):
         dest_path = f.replace(downloads_dir, segments_dir)
-        print(dest_path)
+        ytid = os.path.splitext(os.path.basename(f))[0]
+        start_time = segments[ytid][0]
+
+        if os.path.exists(dest_path):
+            print('skipped {}. segment exists.'.format(f))
+        else:
+            command = 'ffmpeg -ss {start} -i {input} -t 10 -c copy {output}'.format(
+                start=start_time,
+                input=f,
+                output=dest_path
+            )
+            print(command)
+            # os.system(command)
+        
 
 
 if __name__ == '__main__':
