@@ -33,7 +33,7 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
         segments[ytid] = (start, end)
 
     for f in glob(downloads_dir + '/*.mp4'):
-        dest_path = f.replace(downloads_dir, segments_dir)
+        dest_path = f.replace(downloads_dir, destination_dir)
         ytid = os.path.splitext(os.path.basename(f))[0]
         start_time = segments[ytid][0]
 
