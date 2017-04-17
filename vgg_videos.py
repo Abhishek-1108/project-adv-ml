@@ -37,7 +37,7 @@ def featurize_dir(source_dir):
             frameset.append(img)
             
         frameset = np.asarray(frameset)
-        X.append(framset)
+        X.append(frameset)
     X = np.asarray(X)
     return X
 
