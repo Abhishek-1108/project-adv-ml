@@ -2,6 +2,7 @@ from glob import glob
 from keras import applications
 from scipy.misc import imread, imresize
 import numpy as np
+import os
 
 
 def build_vgg_model():
@@ -40,7 +41,7 @@ def main():
     frames_dir = '/exp/frames'
     X = featurize_dir(source_dir=frames_dir)
     import ipdb; ipdb.set_trace()
-    
+
 
 if __name__ == '__main__':
     main()
