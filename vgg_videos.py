@@ -20,6 +20,7 @@ def forward_prop_and_save(model, X, dest_path):
         open(dest_path, 'w'),
         avg_features
     )
+    return avg_features
 
 
 def featurize_dir(source_dir):
@@ -28,12 +29,16 @@ def featurize_dir(source_dir):
     X = []
     for d in subdirs:
         frameset = []
-        for f in glob(d + '/*.jpg'):
+        dirpath = os.path.join(source_dir, d)
+        for f in glob(dirpath + '/*.jpg'):
             img = imread(f)
             img = imresize(img, target_size)
+            img = np.asarray(img)
             frameset.append(img)
-
+            
+        frameset = np.asarray(frameset)
         X.append(framset)
+    X = np.asarray(X)
     return X
 
 
