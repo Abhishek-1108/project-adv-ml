@@ -57,7 +57,7 @@ def write_frames_to_dir(vid_file, dest_dir):
     # for the first set of filtered videos
     # lets average the frames after every 0.5 seconds (approx.)
     vid = cv2.VideoCapture(vid_file)
-    fps = vid.get(cv2.CAP_PROP_FPS)
+    fps = round(vid.get(cv2.CAP_PROP_FPS), ndigits=0)
 
     # how many frames fit in our window size of 0.5 seconds
     window_size = int(fps / 2)
