@@ -1,5 +1,6 @@
-# project-adv-ml
-adv. ml project
+# adv. ml project
+
+# Useful Snippets
 
 ## download files
 - `mkdir downloads`
