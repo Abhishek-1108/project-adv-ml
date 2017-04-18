@@ -2,6 +2,7 @@ from glob import glob
 import os
 
 import cv2
+import numpy as np
 
 
 def make_dir_if_not_exist(dirpath):
@@ -52,15 +53,39 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
 
 
 def write_frames_to_dir(vid_file, dest_dir):
+    # minimum and maximum fps was ~6 and ~30 respectively 
+    # for the first set of filtered videos
+    # lets average the frames after every 0.5 seconds (approx.)
     vid = cv2.VideoCapture(vid_file)
+    fps = vid.get(cv2.CAP_PROP_FPS)
+
+    # how many frames fit in our window size of 0.5 seconds
+    window_size = int(fps / 2)
+
     i = -1
+    frame_number = 0
+    window = []
     while True:
         read_success, frame = vid.read()
         if read_success:
-            i += 1
-            dest_path = '{}/{}.jpg'.format(dest_dir, i)
-            cv2.imwrite(dest_path, frame)
+            frame_number += 1
+            window.append(frame)
+            if frame_number == window_size:
+                window_average = np.average(np.asarray(window), axis=0)
+                i += 1
+                dest_path = '{}/{}.jpg'.format(dest_dir, i)
+                cv2.imwrite(dest_path, window_average)
+                window = []
+                frame_number = 0
         else:
+            # no more frames to read
+            # flush out the last remanants of the video and return
+            if len(window) > 0:
+                window_average = np.average(np.asarray(window), axis=0)
+                i += 1
+                dest_path = '{}/{}.jpg'.format(dest_dir, i)
+                cv2.imwrite(dest_path, window_average)
+            
             return
 
 
