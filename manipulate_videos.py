@@ -79,10 +79,10 @@ def create_frames(video_src_dir, dest_frames_dir):
 
 
 def main():
-    vid_segments_info_file = '/proj/balanced_train_segments.csv'
+    vid_segments_info_file = os.getenv('filtered_path')
     
-    downloads_dir = '/exp/downloads'
-    segments_dir = '/exp/segments'
+    downloads_dir = os.getenv('downloads_dir')
+    segments_dir = os.getenv('segments_dir')
     make_dir_if_not_exist(segments_dir)
     cut_videos(
         vid_segments_file=vid_segments_info_file,
@@ -90,7 +90,7 @@ def main():
         destination_dir=segments_dir    
     )
 
-    frames_dir = '/exp/frames'
+    frames_dir = os.getenv('frames_dir')
     create_frames(
         video_src_dir=segments_dir,
         dest_frames_dir=frames_dir
