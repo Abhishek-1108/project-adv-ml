@@ -43,7 +43,7 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
         if os.path.exists(dest_path):
             print('skipped {}. segment exists.'.format(f))
         else:
-            command = 'ffmpeg -ss {start} -i {input} -t 10 -c copy {output}'.format(
+            command = 'ffmpeg -i {input} -ss {start} -t 00:00:10 -c copy {output}'.format(
                 start=start_time,
                 input=f,
                 output=dest_path
