@@ -106,6 +106,8 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
                     dest_path = '{}/{}.jpg'.format(dest_dir, averaged_frame_count)
                     cv2.imwrite(dest_path, window_average)
                 return
+        else:
+            return
 
 
 def create_frames(video_src_dir, dest_frames_dir):
