@@ -78,11 +78,12 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
     window = []
     vid.set(1, start_frame_count)
     while True:
+        print('..started reading frames')
         read_success, frame = vid.read()
         if read_success:
             frame_number += 1
             if frame_number % 100 == 0:
-                print('at frame: {}'.format(frame_number))
+                print('..at frame: {}'.format(frame_number))
 
             # video segment of interest starts here
             if frame_number < frame_length:
