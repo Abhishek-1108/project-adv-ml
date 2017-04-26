@@ -71,8 +71,10 @@ def featurize_dir(source_dir):
 
 def main():
     frames_dir = '/exp/frames'
+    import ipdb;
+    ipdb.set_trace()
     X = featurize_dir(source_dir=frames_dir)
-    import ipdb; ipdb.set_trace()
+    ipdb.set_trace()
 
 
 if __name__ == '__main__':
