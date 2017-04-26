@@ -69,6 +69,7 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
 
     start_frame_count = int(fps * start_time)
     stop_frame_count = int(fps * end_time)
+    print(start_frame_count, stop_frame_count)
 
     frame_number = -1
     averaged_frame_count = -1
@@ -78,6 +79,8 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
         read_success, frame = vid.read()
         if read_success:
             frame_number += 1
+            if frame_number % 100 == 0:
+                print('at frame: {}'.format(frame_number))
 
             # video segment of interest starts here
             if start_frame_count < frame_number:
