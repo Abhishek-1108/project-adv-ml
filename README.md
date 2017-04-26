@@ -10,3 +10,7 @@
 ## pre-requisites
 - `https://github.com/jayrambhia/Install-OpenCV`
 - if `import cv2` fails, run `sudo ln /dev/null /dev/raw1394`
+
+## Access Data on Google Cloud
+-`https://drive.google.com/drive/u/0/folders/0B2EKqwKjksHSSnFIZzdvYU82cG8`
+
