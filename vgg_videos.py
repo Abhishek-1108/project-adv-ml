@@ -16,7 +16,11 @@ def forward_prop_and_save(model, X, dest_path):
     # frame0, ...
     # frame1, ...
     # frame2, ...
-    vgg_features = model.predict(X)
+    n, common_count, w, h, channels = X.shape
+    preds = []
+    for i in range(n):
+        vgg_features = model.predict(X[i])
+        preds.append(vgg_features)
     np.save(
         open(dest_path, 'w'),
         vgg_features
@@ -24,7 +28,7 @@ def forward_prop_and_save(model, X, dest_path):
     return vgg_features
 
 
-def featurize_dir(source_dir):
+def featurize_dir(model, source_dir):
     subdirs = [d for d in os.listdir(source_dir) if os.path.isdir(os.path.join(source_dir, d))]
     target_size = (150, 150)
     required_count = 20
@@ -63,21 +67,21 @@ def featurize_dir(source_dir):
             frameset = new_frameset
             
         frameset = np.asarray(frameset)
-        X.append(frameset)
+        # X.append(frameset)
+
+        dest_path = '/exp/features/' + d + '.npz'
+        forward_prop_and_save(model, frameset, dest_path)
+
         i = i + 1
         if i % 100 == 0:
             print('processed', i)
-    X = np.asarray(X)
-    return X
 
 
 def main():
     frames_dir = '/exp/frames'
-    dest_path = '/exp/features.npz'
-    X = featurize_dir(source_dir=frames_dir)
-    print('X.shape ', X.shape)
+
     model = build_vgg_model()
-    forward_prop_and_save(model, X, dest_path)
+    featurize_dir(source_dir=frames_dir, model=model)
 
 if __name__ == '__main__':
     main()
