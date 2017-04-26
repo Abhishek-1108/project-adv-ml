@@ -18,6 +18,7 @@ def forward_prop_and_save(model, X, dest_path):
     # frame2, ...
     vgg_features = model.predict(X)
     avg_features = np.average(vgg_features, axis=0)
+    print('avg shape ', avg_features.shape)
     np.save(
         open(dest_path, 'w'),
         avg_features
@@ -47,7 +48,6 @@ def featurize_dir(source_dir):
 
         frameset_length = len(frameset)
         if frameset_length < required_count:
-            ipdb.set_trace()
             diff = required_count - frameset_length
             half_diff = (diff * 1.0)/2
 
@@ -71,11 +71,11 @@ def featurize_dir(source_dir):
 
 def main():
     frames_dir = '/exp/frames'
-    import ipdb;
-    ipdb.set_trace()
+    dest_path = '/exp/features.npz'
     X = featurize_dir(source_dir=frames_dir)
-    ipdb.set_trace()
-
+    print('X.shape ', X.shape)
+    model = build_vgg_model()
+    forward_prop_and_save(model, X, dest_path)
 
 if __name__ == '__main__':
     main()
