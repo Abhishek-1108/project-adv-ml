@@ -1,4 +1,6 @@
 from glob import glob
+import math
+import ipdb
 from keras import applications
 from scipy.misc import imread, imresize
 import numpy as np
