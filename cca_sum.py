@@ -1,5 +1,5 @@
 
-import models.py
+import models
 import scipy.io as sio
 
 labels = sio.loadmat('labels.mat')
