@@ -69,12 +69,14 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
 
     start_frame_count = int(fps * start_time)
     stop_frame_count = int(fps * end_time)
-    print(start_frame_count, stop_frame_count)
+    frame_length = stop_frame_count - start_frame_count
+    print(start_frame_count, stop_frame_count, frame_length)
 
     frame_number = -1
     averaged_frame_count = -1
     window_count = 0
     window = []
+    vid.set(1, start_frame_count)
     while True:
         read_success, frame = vid.read()
         if read_success:
@@ -83,28 +85,26 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
                 print('at frame: {}'.format(frame_number))
 
             # video segment of interest starts here
-            if start_frame_count < frame_number:
-                if frame_number < stop_frame_count:
-                    window_count += 1
-                    window.append(frame)
-                    # if our window is full, average it and flush out
-                    if window_count == window_size:
-                        window_average = np.average(np.asarray(window), axis=0)
-                        averaged_frame_count += 1
-                        dest_path = '{}/{}.jpg'.format(dest_dir, averaged_frame_count)
-                        cv2.imwrite(dest_path, window_average)
-                        window = []
-                        window_count = 0
-                else:
-                    # video segment of interest has ended
-                    # average and flush out any remaining part of the window
-                    if len(window) > 0:
-                        window_average = np.average(np.asarray(window), axis=0)
-                        averaged_frame_count += 1
-                        dest_path = '{}/{}.jpg'.format(dest_dir, averaged_frame_count)
-                        cv2.imwrite(dest_path, window_average)
-        else:
-            return
+            if frame_number < frame_length:
+                window_count += 1
+                window.append(frame)
+                # if our window is full, average it and flush out
+                if window_count == window_size:
+                    print('...window_size: {}'.format(len(window)))
+                    window_average = np.average(np.asarray(window), axis=0)
+                    averaged_frame_count += 1
+                    dest_path = '{}/{}.jpg'.format(dest_dir, averaged_frame_count)
+                    cv2.imwrite(dest_path, window_average)
+                    window = []
+                    window_count = 0
+            else:
+                # video segment of interest has ended
+                # average and flush out any remaining part of the window
+                if len(window) > 0:
+                    window_average = np.average(np.asarray(window), axis=0)
+                    averaged_frame_count += 1
+                    dest_path = '{}/{}.jpg'.format(dest_dir, averaged_frame_count)
+                    cv2.imwrite(dest_path, window_average)
 
 
 def create_frames(video_src_dir, dest_frames_dir):
