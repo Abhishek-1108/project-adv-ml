@@ -29,6 +29,7 @@ def featurize_dir(source_dir):
     target_size = (150, 150)
     required_count = 20
     X = []
+    i = 0
     for d in subdirs:
         frameset = []
         dirpath = os.path.join(source_dir, d)
@@ -63,6 +64,9 @@ def featurize_dir(source_dir):
             
         frameset = np.asarray(frameset)
         X.append(frameset)
+        i = i + 1
+        if i % 100 == 0:
+            print('processed', i)
     X = np.asarray(X)
     return X
 
