@@ -22,6 +22,13 @@ def download_from_file(filepath, output_dir, start=1, end=100):
         vid = split_line[0]
 
 
+def seconds_to_hms(seconds):
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    representation = "%02d:%02d:%02d" % (h, m, s)
+    return representation
+
+
 def cut_videos(vid_segments_file, downloads_dir, destination_dir):
     segments = {}  # ytid: (start, end)
     with open(vid_segments_file) as infile:
@@ -38,13 +45,17 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
     for f in glob(downloads_dir + '/*.mp4'):
         dest_path = f.replace(downloads_dir, destination_dir)
         ytid = os.path.splitext(os.path.basename(f))[0]
-        start_time = segments[ytid][0]
+        start_time = int(float(segments[ytid][0].strip()))
+        start_time = seconds_to_hms(start_time)
+        end_time = int(float(segments[ytid][1].strip()))
+        end_time = seconds_to_hms(end_time)
 
         if os.path.exists(dest_path):
             print('skipped {}. segment exists.'.format(f))
         else:
-            command = 'ffmpeg -i {input} -ss {start} -t 00:00:10 -c copy {output}'.format(
+            command = 'ffmpeg -i {input} -ss {start} -to {end} -c copy {output}'.format(
                 start=start_time,
+                end=end_time,
                 input=f,
                 output=dest_path
             )
