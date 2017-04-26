@@ -63,6 +63,7 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
     # lets average the frames after every 0.5 seconds (approx.)
     vid = cv2.VideoCapture(vid_file)
     fps = round(vid.get(cv2.CAP_PROP_FPS), ndigits=0)
+    print('file', vid_file)
     print('fps', fps)
     window_size = int(fps / 2)
     print('window_size', window_size)
@@ -78,7 +79,6 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
     window = []
     vid.set(1, start_frame_count)
     while True:
-        print('..started reading frames')
         read_success, frame = vid.read()
         if read_success:
             frame_number += 1
@@ -91,7 +91,6 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
                 window.append(frame)
                 # if our window is full, average it and flush out
                 if window_count == window_size:
-                    print('...window_size: {}'.format(len(window)))
                     window_average = np.average(np.asarray(window), axis=0)
                     averaged_frame_count += 1
                     dest_path = '{}/{}.jpg'.format(dest_dir, averaged_frame_count)
