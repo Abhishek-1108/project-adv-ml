@@ -16,11 +16,13 @@ def forward_prop_and_save(model, X, dest_path):
     # frame0, ...
     # frame1, ...
     # frame2, ...
-    n, common_count, w, h, channels = X.shape
-    preds = []
-    for i in range(n):
-        vgg_features = model.predict(X[i])
-        preds.append(vgg_features)
+    # n, common_count, w, h, channels = X.shape
+    # preds = []
+    # for i in range(n):
+    #
+    #     preds.append(vgg_features)
+
+    vgg_features = model.predict(X)
     np.save(
         open(dest_path, 'w'),
         vgg_features
