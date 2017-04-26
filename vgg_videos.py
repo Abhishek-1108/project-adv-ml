@@ -15,7 +15,7 @@ def forward_prop_and_save(model, X, dest_path):
     # frame1, ...
     # frame2, ...
     vgg_features = model.predict(X)
-    avg_features = np.avg(vgg_features, axis=0)
+    avg_features = np.average(vgg_features, axis=0)
     np.save(
         open(dest_path, 'w'),
         avg_features
