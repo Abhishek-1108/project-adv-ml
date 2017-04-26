@@ -67,8 +67,8 @@ def write_frames_to_dir(vid_file, dest_dir, start_time, end_time):
     window_size = int(fps / 2)
     print('window_size', window_size)
 
-    start_frame_count = fps * start_time
-    stop_frame_count = fps * end_time
+    start_frame_count = int(fps * start_time)
+    stop_frame_count = int(fps * end_time)
 
     frame_number = -1
     averaged_frame_count = -1
