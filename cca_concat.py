@@ -1,22 +1,26 @@
 
-from  models import *
 import scipy.io as sio
+import xgboost as xgb
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn import svm
+import numpy as np
+from models import *
 
 labels = sio.loadmat('labels.mat')
 labels = labels['labels'][0]
 
 #Loading data
 
-data = sio.loadmat('ccaFuse_sum.mat')
+data = sio.loadmat('ccaFuse_concat.mat')
 
 labels_test = np.transpose(data['labels_test'])[0]
 labels_train = np.transpose(data['labels_train'])[0]
-testZ_sum = data['testZ_sum']
+testZ_concat = data['testZ_concat']
 testX = data['testX']
 testY = data['testY']
 trainX = data['trainX']
 trainY = data['trainY']
-trainZ_sum = data['trainZ_sum']
+trainZ_concat = data['trainZ_concat']
 
 # Top 4 frequent labels selected
 
@@ -25,6 +29,7 @@ indices = np.argsort(temp[1])
 values = temp[0][indices]
 high = [values[-1],values[-2],values[-3],values[-4]]
 print values[-1],values[-2],values[-3],values[-4]
+
 
 # Picking data corresponding to top 4 labels
 
@@ -40,8 +45,7 @@ trainY_new = []
 for i in xrange(len(labels_train)):
     if labels_train[i] in high:
         Fused_labels_train.append(labels_train[i])
-        Fused_train.append(trainZ_sum[i])
-print high
+        Fused_train.append(trainZ_concat[i])
         trainX_new.append(trainX[i])
         trainY_new.append(trainY[i])
 
@@ -56,7 +60,7 @@ print len(Fused_train), len(trainX_new), len(trainY_new)
 for i in xrange(len(labels_test)):
     if labels_test[i] in high:
         Fused_labels_test.append(labels_test[i])
-        Fused_test.append(testZ_sum[i])
+        Fused_test.append(testZ_concat[i])
         testX_new.append(trainX[i])
         testY_new.append(trainY[i])
 
