@@ -45,10 +45,9 @@ def cut_videos(vid_segments_file, downloads_dir, destination_dir):
 
     # use downloads to create frames
     for f in glob(downloads_dir + '/*.mp4'):
-        dest_path = f.replace(downloads_dir, destination_dir)
 
         ytid = os.path.splitext(os.path.basename(f))[0]
-        dest_path = os.path.join(dest_path, ytid)
+        dest_path = os.path.join(destination_dir, ytid)
         make_dir_if_not_exist(dest_path)
 
         start_time = int(float(segments[ytid][0].strip()))
