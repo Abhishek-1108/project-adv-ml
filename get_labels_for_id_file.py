@@ -44,6 +44,9 @@ def main():
     label_map = get_labels_for_ids(labels_path, whitelist)
     print('Label map length: {}'.format(len(label_map.items())))
 
+    uniq_in_map = set(label_map.values())
+    print('Unique labels in map: ({}) {}'.format(len(uniq_in_map), uniq_in_map))
+
     with open('/proj/pls_audioset_experiments/label_map.pkl', 'wb') as outfile:
         pickle.dump(label_map, outfile)
 
