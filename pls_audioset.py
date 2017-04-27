@@ -84,7 +84,7 @@ def save_outputs(output_dir, ids, videos, audios, videos_pca, videos_c, audios_c
         pickle.dump(audios_c, outfile)
 
     fused = []
-    for i in videos_c.shape[0]:
+    for i in range(videos_c.shape[0]):
         fused.append(
             np.hstack((videos_c[i], audios_c[i]))
         )
