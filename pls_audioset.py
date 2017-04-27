@@ -4,7 +4,7 @@ import os
 import pickle
 
 from sklearn.cross_decomposition import PLSCanonical
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, TruncatedSVD
 import numpy as np
 import ipdb
 
@@ -110,9 +110,9 @@ def main():
     print("Audios shape {}".format(audios.shape))
 
     # original video data is sparse, so we can hopefully do much better with PCA
-    pca = PCA(n_components=1280)
-    pca.fit(videos)
-    videos_transformed = pca.transform(videos)
+    svd = TruncatedSVD(n_components=1280)
+    svd.fit(videos)
+    videos_transformed = svd.transform(videos)
     print("Videos Transformed shape {}".format(videos_transformed.shape))
 
     videos_c, audios_c = pls_decomposition(videos, audios)
