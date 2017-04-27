@@ -46,3 +46,7 @@ def main():
 
     with open('/proj/pls_audioset_experiments/label_map.pkl', 'wb') as outfile:
         pickle.dump(label_map, outfile)
+
+
+if __name__ == '__main__':
+    main()
