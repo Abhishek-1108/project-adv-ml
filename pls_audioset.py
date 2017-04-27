@@ -82,7 +82,7 @@ def save_outputs(output_dir, ids, videos, audios, videos_pca, videos_c, audios_c
 
 
 def main():
-    video_basedir = '/Users/mridul/Downloads/features/'  # '/proj/audioset_video_features/'
+    video_basedir = '/proj/audioset_video_features/'
     audio_basedir = '/proj/audioset_v1_pickles/'
     output_dir = '/proj/pls_audioset_experiments/'
     if not os.path.exists(output_dir):
