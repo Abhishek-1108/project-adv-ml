@@ -61,8 +61,8 @@ for i in xrange(len(labels_test)):
     if labels_test[i] in high:
         Fused_labels_test.append(labels_test[i])
         Fused_test.append(testZ_concat[i])
-        testX_new.append(trainX[i])
-        testY_new.append(trainY[i])
+        testX_new.append(testX[i])
+        testY_new.append(testY[i])
 
 
 print len(Fused_labels_test)
