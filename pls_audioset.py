@@ -1,4 +1,5 @@
 from glob import glob
+import math
 import os
 import pickle
 
@@ -28,10 +29,24 @@ def get_video_features(basedir):
 
 def get_audio_features(basedir, ids):
     X = []
+    required_count = 10
     for id in ids:
         fullpath = os.path.join(basedir, id) + ".pkl"
         with open(fullpath) as infile:
             x = pickle.load(infile)
+
+        x_length = len(x)
+        if x_length < required_count:
+            diff = required_count - x_length
+            half_diff = (diff * 1.0) / 2
+
+            start_rep = int(math.floor(half_diff))
+            end_rep = int(math.ceil(half_diff))
+            # pad the array with edges,
+            # if the length of the frameset is less than required
+            # only pad so as to repeat the frame (axis 0),
+            # and not the dimensions themselves (axis 1)
+            x = np.lib.pad(x, ((start_rep, end_rep), (0, 0)), 'edge')
 
         x = x.flatten()
         X.append(x)
