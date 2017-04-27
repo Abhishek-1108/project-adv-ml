@@ -13,4 +13,5 @@
 
 ## Access Data on Google Cloud
 -`https://drive.google.com/drive/u/0/folders/0B2EKqwKjksHSSnFIZzdvYU82cG8`
-
+## Results and To-Do:
+-`https://docs.google.com/document/d/1UL1F84uurzfSngMJd6-chrI4vFRsr4RrXuhxkVHHrn8/edit` 
