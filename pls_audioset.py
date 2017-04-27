@@ -96,6 +96,13 @@ def save_outputs(output_dir, ids, videos, audios, videos_pca, videos_c, audios_c
         pickle.dump(fused, outfile)
 
 
+def reduce_dimensions(X, n_components):
+    svd = TruncatedSVD(n_components=n_components)
+    svd.fit(X)
+    Xdash = svd.transform(X)
+    return Xdash, svd
+
+
 def main():
     video_basedir = '/proj/audioset_video_features/'
     audio_basedir = '/proj/pickles_audioset/bal_train/'
@@ -110,12 +117,12 @@ def main():
     print("Audios shape {}".format(audios.shape))
 
     # original video data is sparse, so we can hopefully do much better with PCA
-    svd = TruncatedSVD(n_components=1280)
-    svd.fit(videos)
-    videos_transformed = svd.transform(videos)
-    print("Videos Transformed shape {}".format(videos_transformed.shape))
+    videos_transformed, v_reducer = reduce_dimensions(videos, 512)
+    print('Videos Transformed shape {}'.format(videos_transformed.shape))
+    audios_transformed, a_reducer = reduce_dimensions(audios, 512)
+    print('Audios Transformed shape {}'.format(audios_transformed.shape))
 
-    videos_c, audios_c = pls_decomposition(videos, audios)
+    videos_c, audios_c = pls_decomposition(videos_transformed, audios_transformed)
     print('PLS shapes {} {}'.format(videos_c.shape, audios_c.shape))
 
     save_outputs(output_dir, ids, videos, audios, videos_transformed, videos_c, audios_c)
