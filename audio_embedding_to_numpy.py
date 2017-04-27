@@ -48,6 +48,5 @@ for frame_lvl_record in fileList:
         break
     features = np.asarray(frames)
 
-    with open(fileDump) as f:
+    with open(fileDump, "w") as f:
         pickle.dump(features, f)
-    
