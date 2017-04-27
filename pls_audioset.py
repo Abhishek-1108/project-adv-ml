@@ -29,7 +29,7 @@ def get_video_features(basedir):
 def get_audio_features(basedir, ids):
     X = []
     for id in ids:
-        fullpath = os.path.join(basedir, id[:2])
+        fullpath = os.path.join(basedir, id[:2]) + ".pkl"
         with open(fullpath) as infile:
             x = pickle.load(infile)
 
