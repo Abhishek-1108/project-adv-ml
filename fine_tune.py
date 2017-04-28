@@ -71,7 +71,7 @@ def fine_tune_model(model, videos, audios, original_labels, base_dir, prefix):
     model.layers[-1].trainable = False
 
     model.compile(
-        optimizer=Adam(lr=1e-6),
+        optimizer=Adam(lr=1e-4),
         loss=losses.kld
     )
     pd = get_pd(audios, original_labels)
