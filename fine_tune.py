@@ -28,10 +28,10 @@ def build_model(input_shape, n_classes):
 
 
 def get_callbacks(prefix, base_dir):
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    log_dir = base_dir + 'logs/' # .format(prefix, timestamp)
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')
+    log_dir = base_dir + 'logs/{}_{}/'.format(prefix, timestamp)
     print('log_dir {}'.format(log_dir))
-    model_checkpoint_dir = base_dir + 'models/' # .format(prefix, timestamp)
+    model_checkpoint_dir = base_dir + 'models/{}_{}/'.format(prefix, timestamp)
 
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
@@ -59,35 +59,39 @@ def get_callbacks(prefix, base_dir):
 
 
 def get_pd(x, y):
+    xn = (x - x.min(0)) / x.ptp(0)
     clf = MultinomialNB()
-    clf.fit(x, y)
-    return clf.predict_proba(x)
+    clf.fit(xn, y)
+    return clf.predict_proba(xn)
 
 
-def fine_tune_model(model, videos, audios, labels, base_dir):
+def fine_tune_model(model, videos, audios, original_labels, base_dir, prefix):
     model.layers[-1].trainable = False
 
-    print('Layers after freezing')
-    for layer in model.layers:
-        print(layer)
-
     model.compile(
-        optimizer=Adam(),
+        optimizer=Adam(lr=1e-6),
         loss=losses.kld
     )
-    pd = get_pd(audios, labels)
+    pd = get_pd(audios, original_labels)
+
+    epochs_2 = int(os.getenv('epochs_2'))
 
     model.fit(
         videos,
         pd,
-        callbacks=get_callbacks('second_stage', base_dir)
+        epochs=epochs_2,
+        validation_split=0.15,
+        callbacks=get_callbacks('{}_2'.format(prefix), base_dir)
     )
 
 
 def main():
-    base_dir = '/Users/mridul/Downloads/finetune/'
-    videos_file = base_dir + 'video_new.pkl'
-    video_labels_file = base_dir + 'labels_dca.pkl'
+    base_dir = os.getenv('base_dir')
+    prefix = os.getenv('prefix')
+    epochs_1 = int(os.getenv('epochs_1'))
+    videos_file = base_dir + 'video.pkl'
+    audios_file = base_dir + 'audio.pkl'
+    video_labels_file = base_dir + 'labels.pkl'
     video_labels = read_pickle(video_labels_file).flatten()
     unique_labels = np.array(list(set(video_labels)))
     print "Original Unique Labels", len(unique_labels)
@@ -99,7 +103,9 @@ def main():
     chosen_labels = np.array(chosen_labels)
 
     videos, labels = generate_data_for_labels(videos_file, video_labels, chosen_labels)
+    audios, a_labels = generate_data_for_labels(audios_file, video_labels, chosen_labels)
 
+    original_labels = labels
     label_binarizer = sklearn.preprocessing.LabelBinarizer()
     label_binarizer.fit(range(len(chosen_labels)))
     labels = label_binarizer.transform(labels)
@@ -109,17 +115,17 @@ def main():
 
     model.compile(
         loss=losses.categorical_crossentropy,
-        optimizer=Adam()
+        optimizer=Adam(lr=1e-3)
     )
     model.fit(
         videos, labels,
-        epochs=50,
+        epochs=1,
         verbose=1,
         validation_split=0.15,
-        callbacks=get_callbacks('first_stage', base_dir)
+        callbacks=get_callbacks('{}_1'.format(prefix), base_dir)
     )
 
-    fine_tune_model(model, videos, audios, labels, base_dir)
+    fine_tune_model(model, videos, audios, original_labels, base_dir, prefix)
 
     # model fit -> W1, W2
     # freeze W2
