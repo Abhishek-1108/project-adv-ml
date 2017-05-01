@@ -8,7 +8,7 @@ def read_pickle(filename):
 	data = ""
 	with open(filename,"rb") as f:
 		data = pickle.load(f)
-	return data[:10000]
+	return data
 
 if __name__ == '__main__':
 	read_pickle(sys.argv[1])
