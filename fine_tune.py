@@ -9,7 +9,7 @@ from keras.optimizers import Adam
 from keras.models import Sequential
 from keras.layers import Dense
 from keras import losses
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
 import sklearn.preprocessing
 
 from utils import generate_data_for_labels, read_pickle
@@ -39,13 +39,13 @@ def get_callbacks(prefix, base_dir):
     if not os.path.exists(model_checkpoint_dir):
         os.makedirs(model_checkpoint_dir)
 
-    # # build a tensorboard callback object using the above log dir
-    # tensorboard_callback = TensorBoard(
-    #     log_dir=log_dir,
-    #     histogram_freq=0,
-    #     write_graph=True,
-    #     write_images=False
-    # )
+    # build a tensorboard callback object using the above log dir
+    tensorboard_callback = TensorBoard(
+        log_dir=log_dir,
+        histogram_freq=0,
+        write_graph=True,
+        write_images=False
+    )
     # # build a model checkpoint callback object using the above model checkpoint dir
     checkpoint_callback = ModelCheckpoint(
         model_checkpoint_dir + 'weights.{epoch:02d}.hdf5',
@@ -55,7 +55,9 @@ def get_callbacks(prefix, base_dir):
         save_weights_only=True,
         mode='min'
     )
-    return [checkpoint_callback]
+    early_stopping_callback = EarlyStopping()
+
+    return [checkpoint_callback, tensorboard_callback, early_stopping_callback]
 
 
 def get_pd(x, y):
@@ -69,7 +71,7 @@ def fine_tune_model(model, videos, audios, original_labels, base_dir, prefix):
     model.layers[-1].trainable = False
 
     model.compile(
-        optimizer=Adam(lr=1e-6),
+        optimizer=Adam(lr=1e-4),
         loss=losses.kld
     )
     pd = get_pd(audios, original_labels)
@@ -102,8 +104,8 @@ def main():
         chosen_labels.append(word)
     chosen_labels = np.array(chosen_labels)
 
-    videos, labels = generate_data_for_labels(videos_file, video_labels, chosen_labels)
-    audios, a_labels = generate_data_for_labels(audios_file, video_labels, chosen_labels)
+    videos, labels = generate_data_for_labels(videos_file, video_labels, chosen_labels, Transpose=1)
+    audios, a_labels = generate_data_for_labels(audios_file, video_labels, chosen_labels, Transpose=1)
 
     original_labels = labels
     label_binarizer = sklearn.preprocessing.LabelBinarizer()
@@ -119,7 +121,7 @@ def main():
     )
     model.fit(
         videos, labels,
-        epochs=1,
+        epochs=epochs_1,
         verbose=1,
         validation_split=0.15,
         callbacks=get_callbacks('{}_1'.format(prefix), base_dir)
